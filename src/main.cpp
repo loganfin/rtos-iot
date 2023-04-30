@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -8,6 +9,8 @@
  */
 #include "auth.h"
 
+void wifi_init();
+
 void setup()
 {
     // initialize serial
@@ -15,19 +18,26 @@ void setup()
     // initalize pins
 
     // connect to wifi
+    wifi_init();
+    // start the tasks
+}
+
+void wifi_init()
+{
     Serial.print("Connecting to ");
     Serial.println(WIFI_SSID);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
         Serial.print(".");
     }
 
     Serial.println("");
-    Serial.print("Connected to WiFi network with IP Address: ");
+    Serial.print("Connected to ");
+    Serial.println(WIFI_SSID);
+    Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
-    // start the tasks
 }
 
 void loop() {}
