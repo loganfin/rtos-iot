@@ -1,3 +1,4 @@
+#include "light_sensor.h"
 #include "web_server.h"
 
 #include <Arduino.h>
@@ -19,12 +20,19 @@ void setup()
 {
     // initialize serial
     Serial.begin(115200);
+
+    //start i2c
+    Wire.begin();
+    Wire.setClock(100 * 1000);
+
     // initalize pins
+    light_init();
 
     // connect to wifi
     wifi_init();
     // start the tasks
     xTaskCreate(vWebServer, "Web Server", 4096, nullptr, 1, nullptr);
+    xTaskCreate(vLightSensor, "Light Sensor", 2048, nullptr, 1, nullptr);
 }
 
 void wifi_init()
