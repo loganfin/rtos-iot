@@ -1,7 +1,11 @@
+#include "web_server.h"
+
 #include <Arduino.h>
 #include <WiFi.h>
+#include <Wire.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <stdint.h>
 
 /*
  * Defines WIFI_SSID, WIFI_PASS, SERVER_ADDR and AUTH_CODE.
@@ -20,6 +24,7 @@ void setup()
     // connect to wifi
     wifi_init();
     // start the tasks
+    xTaskCreate(vWebServer, "Web Server", 4096, nullptr, 1, nullptr);
 }
 
 void wifi_init()
