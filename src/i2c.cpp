@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <Wire.h>
 
+// read the data from an 8 bit register
 uint8_t read_8(uint8_t dev_addr, uint8_t reg)
 {
     Wire.beginTransmission(dev_addr);
@@ -14,6 +15,7 @@ uint8_t read_8(uint8_t dev_addr, uint8_t reg)
     return Wire.read();
 }
 
+// read the data from a 16 bit register
 uint16_t read_16(uint8_t dev_addr, uint8_t reg)
 {
     byte buffer[2];
@@ -24,10 +26,10 @@ uint16_t read_16(uint8_t dev_addr, uint8_t reg)
     vTaskDelay(100 / portTICK_PERIOD_MS);
     Wire.requestFrom(dev_addr, 2);
     Wire.readBytes(buffer, 2);
-    return ((uint16_t)buffer[0]) | ((uint16_t)buffer[1] << 8);
-    //return Wire.read();
+    return ((uint16_t)buffer[1]) | ((uint16_t)buffer[0] << 8);
 }
 
+// write 8 bits of data
 void write_8(uint8_t dev_addr, uint8_t reg, uint8_t data)
 {
     Wire.beginTransmission(dev_addr);
