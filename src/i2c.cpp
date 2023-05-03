@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <Wire.h>
 
+SemaphoreHandle_t xi2cSem;
+
 // read the data from an 8 bit register
 uint8_t read_8(uint8_t dev_addr, uint8_t reg)
 {

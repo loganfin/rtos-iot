@@ -1,4 +1,6 @@
+#include "i2c.h"
 #include "light_sensor.h"
+#include "temp_sensor.h"
 #include "web_server.h"
 
 #include <Arduino.h>
@@ -21,6 +23,9 @@ void setup()
     // initialize serial
     Serial.begin(115200);
 
+    // create the semaphores
+    xi2cSem = xSemaphoreCreateBinary();
+
     //start i2c
     Wire.begin();
     Wire.setClock(100 * 1000);
@@ -30,9 +35,13 @@ void setup()
 
     // connect to wifi
     wifi_init();
+
     // start the tasks
     xTaskCreate(vWebServer, "Web Server", 4096, nullptr, 1, nullptr);
     xTaskCreate(vLightSensor, "Light Sensor", 2048, nullptr, 1, nullptr);
+    xTaskCreate(vTemperature, "Temperature Sensor", 2048, nullptr, 1, nullptr);
+
+    xSemaphoreGive(xi2cSem);
 }
 
 void wifi_init()

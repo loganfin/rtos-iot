@@ -50,10 +50,13 @@ uint8_t write_param(uint8_t p, uint8_t v)
 void vLightSensor(void* parameters)
 {
     while (true) {
-        Serial.print("Part id: ");
-        Serial.println(read_part_id(), HEX);
-        Serial.print("Current light level: ");
-        Serial.println(read_visible());
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        if (xSemaphoreTake(xi2cSem, 0) == pdTRUE) {
+            Serial.print("Light (lumens): ");
+            Serial.println(read_visible());
+            Serial.println();
+
+            xSemaphoreGive(xi2cSem);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
     }
 }

@@ -45,17 +45,19 @@ float humidity()
 void vTemperature(void* parameters)
 {
     while (true) {
-        Serial.print("Configuration register: ");
-        Serial.println(read_config(), HEX);
-        Serial.print("Manufacturer ID in C: ");
-        Serial.println(read_man_id(), HEX);
-        Serial.print("Temperature in C: ");
-        Serial.println(temp_c());
-        Serial.print("Temperature in F: ");
-        Serial.println(temp_f());
-        Serial.print("Humidity: ");
-        Serial.println(humidity());
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        if (xSemaphoreTake(xi2cSem, 0) == pdTRUE) {
+            Serial.print("Temperature (C): ");
+            Serial.println(temp_c());
+            Serial.print("Temperature (F): ");
+            Serial.println(temp_f());
+            Serial.print("Humidity (%): ");
+            Serial.println(humidity());
+            Serial.println();
+
+            xSemaphoreGive(xi2cSem);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+        taskYIELD();
     }
 }
 
