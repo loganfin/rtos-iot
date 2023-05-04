@@ -1,6 +1,9 @@
 #pragma once
 
+#include <Arduino.h>
 #include <stdint.h>
+
+extern QueueHandle_t xQVisibleLight;
 
 void light_init();
 uint8_t read_part_id();

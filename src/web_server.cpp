@@ -1,5 +1,7 @@
 #include "web_server.h"
+#include "light_sensor.h"
 
+#include <string>
 #include <WiFi.h>
 
 void vWebServer(void* parameters)
@@ -13,6 +15,9 @@ void vWebServer(void* parameters)
     const uint64_t timeout_ms = 2000;
     uint64_t current_time = millis();
     uint64_t previous_time = 0;
+
+    uint16_t vis_light;
+    char buffer[256];
 
     web_server.begin();
 
@@ -61,8 +66,9 @@ void vWebServer(void* parameters)
                                                     "<tr>"
                                                         "<td>"
                                     );
+                            xQueuePeek(xQVisibleLight, &vis_light, 0);
                             client.print(
-                                                            "test"
+                                                            std::to_string(vis_light).c_str()
                                     );
                             client.println(
                                                         "</td>"

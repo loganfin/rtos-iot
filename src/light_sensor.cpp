@@ -17,6 +17,8 @@ const byte si1145_reg_paramwr = 0x17;
 const byte si1145_param_set = 0xa0;
 const byte si1145_reg_paramrd = 0x2e;
 
+QueueHandle_t xQVisibleLight;
+
 void light_init()
 {
     // set automatic measurement rate
@@ -51,10 +53,12 @@ void vLightSensor(void* parameters)
 {
     while (true) {
         if (xSemaphoreTake(xi2cSem, 0) == pdTRUE) {
-            Serial.print("Light (lumens): ");
-            Serial.println(read_visible());
-            Serial.println();
+            //Serial.print("Light (lumens): ");
+            //Serial.println(read_visible());
+            //Serial.println();
+            uint16_t vis_light = read_visible();
 
+            xQueueOverwrite(xQVisibleLight, &vis_light);
             xSemaphoreGive(xi2cSem);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }

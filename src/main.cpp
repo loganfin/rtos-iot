@@ -27,6 +27,9 @@ void setup()
     // create the semaphores
     xi2cSem = xSemaphoreCreateBinary();
 
+    // create the queues
+    xQVisibleLight = xQueueCreate(1, sizeof(uint16_t));
+
     //start i2c
     Wire.begin();
     Wire.setClock(100 * 1000);
