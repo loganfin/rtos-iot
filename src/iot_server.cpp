@@ -1,6 +1,7 @@
 #include "iot_server.h"
 #include "auth.h"
 #include "light_sensor.h"
+#include "temp_sensor.h"
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -18,7 +19,12 @@ void vIotServer(void* parameters)
     DynamicJsonDocument json_buffer(2048);
     String http_request_data;
 
-    uint16_t vis_light;
+    uint16_t vis_light = 0;
+    float temperature = 0.0;
+    float humidity = 0.0;
+    float latitude = 0.0;
+    float longitude = 0.0;
+    float altitude = 0.0;
 
     while (true) {
         if((xTaskGetTickCount() - last_time) > delay) {
@@ -27,14 +33,16 @@ void vIotServer(void* parameters)
             http.addHeader("Content-Type", "application/json");
 
             xQueueReceive(xQVisibleLight, &vis_light, 0);
+            xQueueReceive(xQTemperature, &temperature, 0);
+            xQueueReceive(xQHumidity, &humidity, 0);
 
             json_buffer["auth_code"] = AUTH_CODE;
-            json_buffer["temperature"] = 0.0;
-            json_buffer["humidity"] = vis_light;
-            json_buffer["light"] = 0.0;
-            json_buffer["latitude"] = 0.0;
-            json_buffer["longitude"] = 0.0;
-            json_buffer["altitude"] = 0.0;
+            json_buffer["temperature"] = temperature;
+            json_buffer["humidity"] = humidity;
+            json_buffer["light"] = vis_light;
+            json_buffer["latitude"] = latitude;
+            json_buffer["longitude"] = longitude;
+            json_buffer["altitude"] = altitude;
             json_buffer["time"] = "2023-05-04 00:00:01";
             serializeJson(json_buffer, http_request_data);
 

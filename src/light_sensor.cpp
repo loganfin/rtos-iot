@@ -51,12 +51,11 @@ uint8_t write_param(uint8_t p, uint8_t v)
 
 void vLightSensor(void* parameters)
 {
+    uint16_t vis_light = 0;
+
     while (true) {
         if (xSemaphoreTake(xi2cSem, 0) == pdTRUE) {
-            //Serial.print("Light (lumens): ");
-            //Serial.println(read_visible());
-            //Serial.println();
-            uint16_t vis_light = read_visible();
+            vis_light = read_visible();
 
             xQueueOverwrite(xQVisibleLight, &vis_light);
             xSemaphoreGive(xi2cSem);

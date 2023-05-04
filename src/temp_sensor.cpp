@@ -11,6 +11,9 @@ const byte hdc_humid_reg = 0x01;
 const byte hdc_config_reg = 0x02;
 const byte hdc_man_id_reg = 0xFE;
 
+QueueHandle_t xQTemperature;
+QueueHandle_t xQHumidity;
+
 uint16_t read_config()
 {
     return read_16(hdc_address, hdc_config_reg);
@@ -44,16 +47,16 @@ float humidity()
 
 void vTemperature(void* parameters)
 {
+    float temperature = 0.0;
+    float humid = 0.0;
+
     while (true) {
         if (xSemaphoreTake(xi2cSem, 0) == pdTRUE) {
-            Serial.print("Temperature (C): ");
-            Serial.println(temp_c());
-            Serial.print("Temperature (F): ");
-            Serial.println(temp_f());
-            Serial.print("Humidity (%): ");
-            Serial.println(humidity());
-            Serial.println();
+            temperature = temp_f();
+            humid = humidity();
 
+            xQueueOverwrite(xQTemperature, &temperature);
+            xQueueOverwrite(xQHumidity, &humid);
             xSemaphoreGive(xi2cSem);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }

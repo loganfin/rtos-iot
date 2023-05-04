@@ -1,6 +1,10 @@
 #pragma once
 
+#include <Arduino.h>
 #include <stdint.h>
+
+extern QueueHandle_t xQTemperature;
+extern QueueHandle_t xQHumidity;
 
 uint16_t read_config();
 uint16_t read_man_id();
