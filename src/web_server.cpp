@@ -40,41 +40,47 @@ void vWebServer(void* parameters)
                             client.println("Connection: close");
                             client.println();
                             // http page content
-                            client.println(R"(
-                                    <!DOCTYPE html>
-                                    <html lang='en'>
-                                        <head>
-                                            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' integrity='sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD' crossorigin='anonymous'>
-                                        </head>
-                                        <body>
-                                            <div class='container mt-3 text-center'>
-                                                <h1>Logan Finley</h1>
-                                                <table class='table'>
-                                                    <thead>
-                                                        <tr>
-                                                            <td scope='col'>Light Sensor</td>
-                                                            <td scope='col'>Stepper Motor</td>
-                                                            <td scope='col'>Action</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>1.234</td>
-                                                            <td>Clockwise</td>
-                                                            <td>
-                                                                <form action='submit'>
-                                                                    <button class='btn btn-outline-primary'>
-                                                                        Change Direction
-                                                                    </button>
-                                                                </form>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </body>
-                                    </html>
-                                    )");
+                            client.print(
+                                "<!DOCTYPE html>"
+                                "<html lang='en'>"
+                                    "<head>"
+                                        "<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' integrity='sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD' crossorigin='anonymous'>"
+                                    "</head>"
+                                    "<body>"
+                                        "<div class='container mt-3 text-center'>"
+                                            "<h1>Logan Finley</h1>"
+                                            "<table class='table'>"
+                                                "<thead>"
+                                                    "<tr>"
+                                                        "<td scope='col'>Light Sensor</td>"
+                                                        "<td scope='col'>Stepper Motor</td>"
+                                                        "<td scope='col'>Action</td>"
+                                                    "</tr>"
+                                                "</thead>"
+                                                "<tbody>"
+                                                    "<tr>"
+                                                        "<td>"
+                                    );
+                            client.print(
+                                                            "test"
+                                    );
+                            client.println(
+                                                        "</td>"
+                                                        "<td>Clockwise</td>"
+                                                        "<td>"
+                                                            "<form action='submit'>"
+                                                                "<button class='btn btn-outline-primary'>"
+                                                                    "Change Direction"
+                                                                "</button>"
+                                                            "</form>"
+                                                        "</td>"
+                                                    "</tr>"
+                                                "</tbody>"
+                                            "</table>"
+                                        "</div>"
+                                    "</body>"
+                                "</html>"
+                                    );
                             client.println();
                             break;
                         }
@@ -92,5 +98,6 @@ void vWebServer(void* parameters)
             Serial.println("Client disconnected.");
             Serial.println("");
         }
+        client.stop();
     }
 }

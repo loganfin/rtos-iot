@@ -1,4 +1,5 @@
 #include "i2c.h"
+#include "iot_server.h"
 #include "light_sensor.h"
 #include "temp_sensor.h"
 #include "web_server.h"
@@ -38,6 +39,7 @@ void setup()
 
     // start the tasks
     xTaskCreate(vWebServer, "Web Server", 4096, nullptr, 1, nullptr);
+    xTaskCreate(vIotServer, "IoT Server", 4096, nullptr, 1, nullptr);
     xTaskCreate(vLightSensor, "Light Sensor", 2048, nullptr, 1, nullptr);
     xTaskCreate(vTemperature, "Temperature Sensor", 2048, nullptr, 1, nullptr);
 
