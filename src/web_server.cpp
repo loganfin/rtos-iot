@@ -1,5 +1,6 @@
 #include "web_server.h"
 #include "light_sensor.h"
+#include "stepper.h"
 
 #include <string>
 #include <WiFi.h>
@@ -18,6 +19,8 @@ void vWebServer(void* parameters)
 
     uint16_t vis_light;
     char buffer[256];
+
+    int stepper_direction = 0;
 
     web_server.begin();
 
@@ -44,6 +47,15 @@ void vWebServer(void* parameters)
                             client.println("Content-type:text/html");
                             client.println("Connection: close");
                             client.println();
+
+                            if (header.indexOf("GET /clockwise") >= 0) {
+                                stepper_direction = stepper_clockwise;
+                                xQueueOverwrite(xQStepper, &stepper_direction);
+                            }
+                            else if (header.indexOf("GET /counter-clockwise") >= 0) {
+                                stepper_direction = !stepper_clockwise;
+                                xQueueOverwrite(xQStepper, &stepper_direction);
+                            }
                             // http page content
                             client.print(
                                 "<!DOCTYPE html>"
@@ -70,14 +82,29 @@ void vWebServer(void* parameters)
                             client.print(
                                                             std::to_string(vis_light).c_str()
                                     );
-                            client.println(
+                            client.print(
                                                         "</td>"
-                                                        "<td>Clockwise</td>"
+                                                        "<td>"
+                                    );
+                            if (stepper_direction) {
+                                client.print(
+                                                           "Clockwise</td>"
+                                        );
+                            }
+                            else {
+                                client.print(
+                                                           "Counter Clockwise</td>"
+                                        );
+                            }
+                            client.print(
                                                         "<td>"
                                                             "<form action='submit'>"
-                                                                "<button class='btn btn-outline-primary'>"
-                                                                    "Change Direction"
-                                                                "</button>"
+                                                                "<a href='clockwise' class='mx-2 btn btn-outline-primary'>"
+                                                                    "Clockwise"
+                                                                "</a>"
+                                                                "<a href='counter-clockwise' class='mx-2 btn btn-outline-primary'>"
+                                                                    "Counter clockwise"
+                                                                "</a>"
                                                             "</form>"
                                                         "</td>"
                                                     "</tr>"
@@ -87,6 +114,7 @@ void vWebServer(void* parameters)
                                     "</body>"
                                 "</html>"
                                     );
+                            client.println();
                             client.println();
                             break;
                         }

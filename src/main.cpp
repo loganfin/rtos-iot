@@ -32,6 +32,7 @@ void setup()
     xQVisibleLight = xQueueCreate(1, sizeof(uint16_t));
     xQTemperature = xQueueCreate(1, sizeof(float));
     xQHumidity = xQueueCreate(1, sizeof(float));
+    xQStepper = xQueueCreate(1, sizeof(int));
 
     //start i2c
     Wire.begin();

@@ -9,6 +9,8 @@ const int stepper_coil_3_pin = 7;
 const int stepper_coil_4_pin = 12;
 const int stepper_clockwise = 1;
 
+QueueHandle_t xQStepper;
+
 void stepper_init()
 {
     pinMode(stepper_coil_1_pin, OUTPUT);
@@ -65,7 +67,10 @@ void stepper_step(uint steps, uint direction)
 
 void vStepper(void* parameters)
 {
+    bool direction = stepper_clockwise;
+
     while (true) {
-        stepper_step(1, stepper_clockwise);
+        xQueueReceive(xQStepper, &direction, 0);
+        stepper_step(1, direction);
     }
 }
