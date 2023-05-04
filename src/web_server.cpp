@@ -12,9 +12,9 @@ void vWebServer(void* parameters)
     String current_line = "";
     char client_data;
 
-    const uint64_t timeout_ms = 2000;
-    uint64_t current_time = millis();
-    uint64_t previous_time = 0;
+    TickType_t timeout_ms = 2000 / portTICK_PERIOD_MS;
+    TickType_t current_time = xTaskGetTickCount();
+    TickType_t previous_time = 0;
 
     uint16_t vis_light;
     char buffer[256];
@@ -25,12 +25,12 @@ void vWebServer(void* parameters)
         client = web_server.available();
 
         if (client) {
-            current_time = millis();
+            current_time = xTaskGetTickCount();
             previous_time = current_time;
             Serial.println("New client.");
 
             while (client.connected() && current_time - previous_time <= timeout_ms) {
-                current_time = millis();
+                current_time = xTaskGetTickCount();
 
                 if (client.available()) {
                     client_data = client.read();
